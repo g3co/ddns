@@ -37,11 +37,14 @@ func main() {
 	oldIp := ""
 
 	for {
-		duration := time.Duration(300)*time.Second
-		time.Sleep(duration)
-
 		req, _ := http.NewRequest("GET", "http://ipv4.internet.yandex.net/internet/api/v0/ip", nil)
-		respIp, _ := client.Do(req)
+		respIp, errIp := client.Do(req)
+		if errIp != nil {
+			duration := time.Duration(1800)*time.Second
+			time.Sleep(duration)
+			continue
+		}
+
 		ipResponseData, _ := ioutil.ReadAll(respIp.Body);
 		ipString := string(ipResponseData)
 		re := regexp.MustCompile(`[^"]+`)
@@ -52,12 +55,15 @@ func main() {
 		respIp.Body.Close()
 
 		if (oldIp == ip_address[0]) {
+			duration := time.Duration(300)*time.Second
+			time.Sleep(duration)
 			continue
 		}
 
 		oldIp = ip_address[0]
 
 		u, _ := url.ParseRequestURI(apiUrl)
+
 		u.Path = fmt.Sprintf("%v%v", u.Path, "list")
 
 		u.RawQuery = fmt.Sprintf("domain=%v", domain)
@@ -96,7 +102,11 @@ func main() {
 				u, _ := url.ParseRequestURI(apiUrl)
 				u.Path = fmt.Sprintf("%v%v", u.Path, "edit")
 
-				req, _ := http.NewRequest("POST", fmt.Sprintf("%v", u), bytes.NewBufferString(form.Encode()))
+				req, err := http.NewRequest("POST", fmt.Sprintf("%v", u), bytes.NewBufferString(form.Encode()))
+				if err != nil {
+					panic(err)
+				}
+
 				req.Header.Add("PddToken", token)
 				req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 				req.Header.Add("Content-Length", strconv.Itoa(len(form.Encode())))
