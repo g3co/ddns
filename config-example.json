@@ -1,0 +1,7 @@
+{
+  "token": "token",
+  "domain": "domain",
+  "apiUrl": "https://pddimp.yandex.ru/api2/admin/dns/",
+  "checkTime": 600,
+  "ipApi": "https://api.ipify.org"
+}
