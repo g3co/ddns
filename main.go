@@ -60,7 +60,7 @@ func do (cfg config) {
 
 	oldIp := ""
 
-	log.SetFlags(log.Lshortfile)
+	log.SetFlags(log.Lshortfile | log.Ltime | log.Ldate)
 
 	log.Println("Program was tarted")
 
