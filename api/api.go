@@ -20,6 +20,7 @@ type Api struct {
 	client 		*http.Client
 }
 
+// Запуск процесса следящего за изменением внешнего IP
 func (a *Api) Do () {
 	a.client = &http.Client{}
 
